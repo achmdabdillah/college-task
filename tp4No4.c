@@ -12,6 +12,7 @@ typedef struct menu {
 
 int main()
 {
+    printf("hello world")
     FILE* ptr;
     char str[50];
     ptr = fopen("test.txt", "a+");
