@@ -10,8 +10,14 @@ typedef struct menu {
     char harga[20];
 } Menu; 
 
+void getData(char tst[1000], Menu menu[10]){
+    printf("%s", tst);
+}
+
 int main()
 {
+    Menu menu[10];
+    char test[2000];
     FILE* ptr;
     char ch;
  
@@ -25,15 +31,19 @@ int main()
  
     do {
         ch = fgetc(ptr);
+        int valid = ch;
 
         if(ch == EOF){
+            getData(test, menu);
             break;
         };
         
-        printf("%c", ch);
+        if(ch > 0 ){
+            strncat(test, &ch, 1);
+        };
  
     } while (true);
- 
+
     fclose(ptr);
     return 0;
 }
