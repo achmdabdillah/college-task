@@ -12,10 +12,10 @@ typedef struct menu {
 
 int main()
 {
-    printf("hello world testtt");
     FILE* ptr;
-    char str[50];
-    ptr = fopen("test.txt", "a+");
+    char ch;
+ 
+    ptr = fopen("test.txt", "r");
  
     if (NULL == ptr) {
         printf("file can't be opened \n");
@@ -23,9 +23,16 @@ int main()
  
     printf("content of this file are \n");
  
-    while (fgets(str, 50, ptr) != NULL) {
-        printf("%s", str);
-    }
+    do {
+        ch = fgetc(ptr);
+
+        if(ch == EOF){
+            break;
+        };
+        
+        printf("%c", ch);
+ 
+    } while (true);
  
     fclose(ptr);
     return 0;
