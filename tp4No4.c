@@ -44,19 +44,17 @@ void getData(Line line[10], Transaction transaction[10]){
     for(int i = 1; i <= 10; i++){
         if(strlen(line[i].line) > 10) transaction[i] = assignTransaction(line[i].line, transaction[i]);
     }
-    // test output
-    printf("%s\n", transaction[1].harga);
-    printf("%s", transaction[2].harga);
 }
 
 int main()
 {
     Transaction transaction[10];
-    char test[3000];
-    FILE* ptr;
-    char ch;
-    int index = 0;
+    FILE * ptr;
     Line line[10];
+    char test[3000];
+    char ch;
+    int menuNo, pilihan, index = 0;
+    bool exit = false;
  
     ptr = fopen("test.txt", "r");
  
@@ -76,5 +74,32 @@ int main()
     getData(line, transaction);
 
     fclose(ptr);
+
+    do{
+        printf("============================\n");
+        printf("SISTEM PENILAIAN MATA KULIAH\n");
+        printf("\n");
+        printf("Pilihan Menu: \n");
+        printf("1. Input data\n");
+        printf("2. View History\n");
+        printf("3. Delete History\n");
+        printf("4. Exit\n");
+        printf("Pilihan Anda: ");
+        scanf("%d", &menuNo);
+        if(menuNo == 1) {
+            index++;
+            printf("== Menu Input Data==\n");
+            printf("Masukan Nama Minuman: ");
+            scanf("%s", transaction[index].nama);
+            printf("Masukan Size: ");
+            scanf("%s", transaction[index].size);
+            printf("Masukan Penyajian: ");
+            scanf("%s", transaction[index].penyajian);
+            printf("%s", transaction[1].nama);
+            printf("%s", transaction[2].nama);
+            printf("%s", transaction[3].nama);
+        }
+    } while (exit != true);
+
     return 0;
 }
