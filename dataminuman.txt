@@ -1,0 +1,3 @@
+No,minuman,size,ppenyajian,harga
+1,kopi,small,dingin,12000
+2,kopi,medium,panas,12000
