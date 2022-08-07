@@ -50,7 +50,6 @@ Transaction assignTransaction (char line[300], Transaction transaction){
         strncat(column[index].column, &line[i], 1); 
     } 
     strcpy(transaction.index    , column[0].column);
-    printf("index %s\n", column[0].column);
     strcpy(transaction.nama     , column[1].column);
     strcpy(transaction.size     , column[2].column);
     strcpy(transaction.penyajian, column[3].column);
