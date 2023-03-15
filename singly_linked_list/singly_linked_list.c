@@ -12,6 +12,7 @@ bool searchById();
 void deleteById();
 void deleteList();
 void insertStart();
+void insertTail();
 void display();
 struct Employee createEmployee();
 
@@ -42,7 +43,7 @@ int main ()
   struct Employee emp = createEmployee();
     
     // Need '&' i.e. address as we need to change head
-    insertStart (&head, emp);
+    insertTail (&head, emp);
     printf("quit ?\n");
     scanf("%d",&inp);
     while ((getchar()) != '\n');
@@ -71,13 +72,42 @@ void insertStart (struct Node **head, struct Employee employeeData)
 
   // assign data value
   newNode->employee = employeeData;
-  // change the next node of this newNode 
-  // to current head of Linked List
+  // change the next node of this newNode to current head of Linked List
   newNode->next = *head;
 
   //re-assign head to this newNode
   *head = newNode;
   printf ("\n%d Inserted\n", newNode->employee.employeeId);
+}
+
+void insertTail(struct Node** head, struct Employee employeeData)
+{
+    /* 1. allocate node */
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+  
+    struct Node *last = *head;  /* used in step 5*/
+   
+    /* 2. put in the data  */
+    newNode->employee  = employeeData;
+  
+    /* 3. This new node is going to be the last node, so make next 
+          of it as NULL*/
+    newNode->next = NULL;
+  
+    /* 4. If the Linked List is empty, then make the new node as head */
+    if (*head == NULL)
+    {
+       *head = newNode;
+       return;
+    }  
+       
+    /* 5. Else traverse till the last node */
+    while (last->next != NULL)
+        last = last->next;
+   
+    /* 6. Change the next of last node */
+    last->next = newNode;
+    return;    
 }
 
 void display (struct Node *node)
