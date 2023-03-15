@@ -4,14 +4,15 @@
 #include <stdbool.h>
 
 // TODO create menu that contains following option: 'Insert', 'Show All Data', 'Delete data by id', 'Delete all Data', 'Quit' 
-// TODO validate length of Employee Data
 // TODO sort data based on Employee ID
+// TODO validate length of Employee Data
 // TODO create table to show all data
 
 bool searchById();
 void deleteById();
 void deleteList();
-
+void insertStart();
+void display();
 struct Employee createEmployee();
 
 struct Employee
@@ -29,22 +30,37 @@ struct Node
   struct Node *next;
 };
 
-void deleteStart (struct Node **head)
+int main ()
 {
-  struct Node *temp = *head;
+  struct Node *head = NULL;
+  
+  int maxData = 2;
 
-  // if there are no nodes in Linked List can't delete
-  if (*head == NULL)
-    {
-      printf ("Linked List Empty, nothing to delete");
-      return;
-    }
+  bool quit = false;
+  int inp;
+  do {
+  struct Employee emp = createEmployee();
+    
+    // Need '&' i.e. address as we need to change head
+    insertStart (&head, emp);
+    printf("quit ?\n");
+    scanf("%d",&inp);
+    while ((getchar()) != '\n');
+    quit = (inp == 1);
+  } while(!quit);
+    
+  display(head);
 
-  // move head to next node
-  *head = (*head)->next;
+  searchById(head, 1);
 
-//   printf ("\n%s deleted\n", temp->employee->employeeId);
-  free (temp);
+  deleteById(&head, 2);
+
+  display(head);
+
+  deleteList(&head);
+
+  display(head);
+  return 0;
 }
 
 void insertStart (struct Node **head, struct Employee employeeData)
@@ -85,39 +101,6 @@ void display (struct Node *node)
   printf ("\n");
 }
 
-int main ()
-{
-  struct Node *head = NULL;
-  
-  int maxData = 2;
-
-  bool quit = false;
-  int inp;
-  do {
-  struct Employee emp = createEmployee();
-    
-    // Need '&' i.e. address as we need to change head
-    insertStart (&head, emp);
-    printf("quit ?\n");
-    scanf("%d",&inp);
-    while ((getchar()) != '\n');
-    quit = (inp == 1);
-  } while(!quit);
-    
-  display(head);
-
-  searchById(head, 1);
-
-  deleteById(&head, 2);
-
-  display(head);
-
-  deleteList(&head);
-
-  display(head);
-  return 0;
-}
-
 void printErr (char errMsg[]) {
   printf("\033[1;31m");
   printf("%s\n", errMsg);
@@ -125,48 +108,47 @@ void printErr (char errMsg[]) {
 }
 
 bool validateEmployeeId(int id) {
-    if(id >= 1 && id <= 5){
-      return true;
-    } else {
-      printErr("Input salah! tolong masukkan angka dari 1-5\n");
-      return false;
-    }
+  if(id >= 1 && id <= 5){
+    return true;
+  } else {
+    printErr("Input salah! tolong masukkan angka dari 1-5\n");
+    return false;
+  }
 }
 
 struct Employee createEmployee () {
-    char nama[30], ttl[30], jabatan[50], employeeId[5];
-    
-    bool isIdValid = false;
-    
-    struct Employee employee;
-    
-    // input employee data
-    do {
-        printf("Input Employee Id : \n");
-        fgets(employeeId, 5, stdin);
-        isIdValid = validateEmployeeId(atoi(employeeId));
-    } while (!isIdValid);
+  char nama[30], ttl[30], jabatan[50], employeeId[5];
+  
+  bool isIdValid = false;
+  
+  struct Employee employee;
+  
+  // input employee data
+  do {
+      printf("Input Employee Id : \n");
+      fgets(employeeId, 5, stdin);
+      isIdValid = validateEmployeeId(atoi(employeeId));
+  } while (!isIdValid);
 
-    printf("Input nama : \n");
-    fgets(nama, 30, stdin);
-    
-    printf("Input TTL : \n");
-    fgets(ttl, 30, stdin);
-    
-    printf("Input jabatan : \n");
-    fgets(jabatan, 50, stdin);
+  printf("Input nama : \n");
+  fgets(nama, 30, stdin);
+  
+  printf("Input TTL : \n");
+  fgets(ttl, 30, stdin);
+  
+  printf("Input jabatan : \n");
+  fgets(jabatan, 50, stdin);
 
-    /* Employee specification */
-    employee.employeeId = atoi(employeeId);
-    strcpy(employee.nama, nama);
-    strcpy(employee.ttl, ttl);
-    strcpy(employee.jabatan, jabatan); 
+  /* Employee specification */
+  employee.employeeId = atoi(employeeId);
+  strcpy(employee.nama, nama);
+  strcpy(employee.ttl, ttl);
+  strcpy(employee.jabatan, jabatan); 
 
-    return employee;
+  return employee;
 } 
 
-bool searchById(struct Node* head, int x)
-{
+bool searchById(struct Node* head, int x) {
   struct Node* current = head; // Initialize current
   while (current != NULL) {
     if (current->employee.employeeId == x){
@@ -179,37 +161,35 @@ bool searchById(struct Node* head, int x)
   return false;
 }
 
-void deleteById(struct Node** head, int employeeId)
-{
-    // Store head node
-    struct Node *temp = *head, *prev;
- 
-    // If head node itself holds the key to be deleted
-    if (temp != NULL && temp->employee.employeeId == employeeId) {
-        *head = temp->next; // Changed head
-        free(temp); // free old head
-        return;
-    }
- 
-    // Search for the key to be deleted, keep track of the
-    // previous node as we need to change 'prev->next'
-    while (temp != NULL && temp->employee.employeeId != employeeId) {
-        prev = temp;
-        temp = temp->next;
-    }
- 
-    // If key was not present in linked list
-    if (temp == NULL)
-        return;
- 
-    // Unlink the node from linked list
-    prev->next = temp->next;
- 
-    free(temp); // Free memory
+void deleteById(struct Node** head, int employeeId) {
+  // Store head node
+  struct Node *temp = *head, *prev;
+
+  // If head node itself holds the key to be deleted
+  if (temp != NULL && temp->employee.employeeId == employeeId) {
+      *head = temp->next; // Changed head
+      free(temp); // free old head
+      return;
+  }
+
+  // Search for the key to be deleted, keep track of the
+  // previous node as we need to change 'prev->next'
+  while (temp != NULL && temp->employee.employeeId != employeeId) {
+      prev = temp;
+      temp = temp->next;
+  }
+
+  // If key was not present in linked list
+  if (temp == NULL)
+      return;
+
+  // Unlink the node from linked list
+  prev->next = temp->next;
+
+  free(temp); // Free memory
 }
 
-void deleteList (struct Node **head)
-{
+void deleteList (struct Node **head) {
   struct Node *temp;
 
   // if there are no nodes in Linked List can't delete
