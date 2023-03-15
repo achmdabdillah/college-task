@@ -38,17 +38,53 @@ int main ()
   int maxData = 2;
 
   bool quit = false;
-  int inp;
+  int menuNo;
+
   do {
-  struct Employee emp = createEmployee();
-    
-    // Need '&' i.e. address as we need to change head
-    insertTail (&head, emp);
-    printf("quit ?\n");
-    scanf("%d",&inp);
-    while ((getchar()) != '\n');
-    quit = (inp == 1);
-  } while(!quit);
+      printf("============================\n");
+      printf("PROGRAM DATA KARYAWAN\n");
+      printf("\n");
+      printf("Pilihan Menu: \n");
+      printf("1. Input data Karyawan\n");
+      printf("2. Tampilkan seluruh data\n");
+      printf("3. Cari data berdasarkan ID\n");
+      printf("4. Hapus data berdasarkan ID\n");
+      printf("5. Hapus seluruh data\n");
+      printf("6. Exit\n");
+      printf("Pilihan Anda: ");
+      scanf("%d", &menuNo);
+      while ((getchar()) != '\n');
+      
+      if(menuNo == 1) {
+        struct Employee emp = createEmployee();
+        // Need '&' i.e. address as we need to change head
+        insertTail (&head, emp);
+      }
+      else if (menuNo == 2) {
+          // printf("\n\n== View History==\n");
+          // printf("--------------------------------------------------------\n");
+          // printf("|%5s|%10s|%10s|%10s|%10s|\n", "No", "Minuman", "Size", "Penyajian", "Harga");
+          // printf("--------------------------------------------------------\n");
+          // for(int i = 1; i < 10; i++){
+          //     if(strlen(transaction[i].nama) > 0){
+          //         printf("|%5d|%10s|%10s|%10s|%10s|\n", i, transaction[i].nama, transaction[i].size, transaction[i].penyajian, transaction[i].harga);
+          //     }
+          // }
+          // printf("--------------------------------------------------------\n");
+      }
+      else if(menuNo == 3){
+          
+      }
+      else if(menuNo == 4){
+        
+      }
+      else if(menuNo == 5){
+        
+      }
+      else if(menuNo == 6){
+        quit = true;
+      }
+  } while (quit != true);
     
   display(head);
 
