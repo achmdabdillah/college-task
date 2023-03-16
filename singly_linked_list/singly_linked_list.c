@@ -5,6 +5,7 @@
 
 // TODO validate length of Employee Data
 // check if id is already exist or not
+
 bool searchById();
 void deleteById();
 void deleteList();
@@ -12,6 +13,7 @@ void insertStart();
 void insertTail();
 void printList();
 void SortLinkedList();
+void printErr();
 struct Employee createEmployee();
 
 struct Employee
@@ -23,7 +25,6 @@ struct Employee
   char jabatan[50];
 };
 
-// Define and Declare Singly Linked List of Struct Employee
 struct Node
 {
   struct Employee employee;
@@ -53,7 +54,6 @@ int main ()
       
       if(menuNo == 1) {
         struct Employee emp = createEmployee();
-        // Need '&' i.e. address as we need to change head
         insertTail (&head, emp);
       }
       else if (menuNo == 2) {
@@ -82,70 +82,56 @@ int main ()
 
 void insertStart (struct Node **head, struct Employee employeeData){
 
-  // dynamically create memory for this newNode
   struct Node *newNode = (struct Node *) malloc (sizeof (struct Node));
 
-  // assign data value
   newNode->employee = employeeData;
-  // change the next node of this newNode to current head of Linked List
   newNode->next = *head;
 
-  //re-assign head to this newNode
   *head = newNode;
-  printf ("\n%d Inserted\n", newNode->employee.employeeId);
+  printf ("\nData berhasil dimasukkan\n");
 }
 
 void insertTail(struct Node** head, struct Employee employeeData)
 {
-    /* 1. allocate node */
     struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
-  
-    struct Node *last = *head;  /* used in step 5*/
+    struct Node *last = *head;
    
-    /* 2. put in the data  */
     newNode->employee  = employeeData;
   
-    /* 3. This new node is going to be the last node, so make next 
-          of it as NULL*/
     newNode->next = NULL;
   
-    /* 4. If the Linked List is empty, then make the new node as head */
     if (*head == NULL)
     {
        *head = newNode;
        return;
     }  
        
-    /* 5. Else traverse till the last node */
     while (last->next != NULL)
         last = last->next;
    
-    /* 6. Change the next of last node */
     last->next = newNode;
     return;    
 }
 
 void SortLinkedList(struct Node *head)
     {
-    printf("\nWORKING\n");
     struct Node *node=NULL, *temp = NULL;
-    struct Employee tempvar;//temp variable to store node data
+    struct Employee tempvar;
     node = head;
-    //temp = node;//temp node to hold node data and next link
     while(node != NULL)
     {
         temp=node; 
-        while (temp->next !=NULL)//travel till the second last element 
+        while (temp->next !=NULL)
         {
-           if(temp->employee.employeeId > temp->employee.employeeId)// compare the data of the nodes 
+           if(temp->employee.employeeId > temp->employee.employeeId)
             {
               tempvar = temp->employee;
-              temp->employee = temp->next->employee;// swap the data
+              temp->employee = temp->next->employee;
               temp->next->employee = tempvar;
             }
-         temp = temp->next;    // move to the next element 
+         temp = temp->next;
         }
-        node = node->next;    // move to the next node
+        node = node->next;
     }
 }
 
@@ -160,23 +146,16 @@ void printStruct(struct Node *node) {
 
 void printList (struct Node *node) {
   if(node == NULL) {
-    printf("Tidak ada data untuk ditampilkan\n");
+    printErr("Tidak ada data untuk ditampilkan\n");
     return;
   }
 
-  // as linked list will end when Node is Null
   while (node != NULL)
     {
       printStruct(node);
       node = node->next;
     }
   printf ("\n");
-}
-
-void printErr (char errMsg[]) {
-  printf("\033[1;31m");
-  printf("%s\n", errMsg);
-  printf("\033[0m");
 }
 
 bool validateEmployeeId(char id[]) {
@@ -196,7 +175,6 @@ struct Employee createEmployee () {
   
   struct Employee employee;
   
-  // input employee data
   do {
       printf("Input Employee Id : \n");
       fgets(employeeId, 10, stdin);
@@ -215,7 +193,6 @@ struct Employee createEmployee () {
   printf("Input jabatan : \n");
   fgets(jabatan, 50, stdin);
 
-  /* Employee specification */
   employee.employeeId = atoi(employeeId);
   strcpy(employee.nama, nama);
   strcpy(employee.tempatLahir, tempatLahir);
@@ -226,54 +203,44 @@ struct Employee createEmployee () {
 } 
 
 bool searchById(struct Node* head, int x) {
-  struct Node* current = head; // Initialize current
+  struct Node* current = head;
   while (current != NULL) {
     if (current->employee.employeeId == x){
-      printf("ADA");
       return true;
     }
     current = current->next;
   }
-  printf("ORA ADA");
   return false;
 }
 
 void deleteById(struct Node** head, int employeeId) {
-  // Store head node
   struct Node *temp = *head, *prev;
 
-  // If head node itself holds the key to be deleted
   if (temp != NULL && temp->employee.employeeId == employeeId) {
-      *head = temp->next; // Changed head
-      free(temp); // free old head
+      *head = temp->next;
+      free(temp);
       return;
   }
 
-  // Search for the key to be deleted, keep track of the
-  // previous node as we need to change 'prev->next'
   while (temp != NULL && temp->employee.employeeId != employeeId) {
       prev = temp;
       temp = temp->next;
   }
 
-  // If key was not present in linked list
   if (temp == NULL)
       return;
 
-  // Unlink the node from linked list
   prev->next = temp->next;
 
-  free(temp); // Free memory
+  free(temp);
 }
 
 void deleteList (struct Node **head) {
   struct Node *temp;
 
-  // if there are no nodes in Linked List can't delete
   while (*head != NULL)
     {
       temp = *head;
-      // move head to next node
       *head = (*head)->next;
 
       printf ("\nData dengan ID %d telah dihapus\n", temp->employee.employeeId);
@@ -281,4 +248,10 @@ void deleteList (struct Node **head) {
     }
   return;
 
+}
+
+void printErr (char errMsg[]) {
+  printf("\033[1;31m");
+  printf("%s\n", errMsg);
+  printf("\033[0m");
 }
