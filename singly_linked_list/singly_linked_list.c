@@ -3,24 +3,23 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-// TODO create menu that contains following option: 'Insert', 'Show All Data', 'Delete data by id', 'Delete all Data', 'Quit' 
-// TODO sort data based on Employee ID
 // TODO validate length of Employee Data
-// TODO create table to show all data
-
+// check if id is already exist or not
 bool searchById();
 void deleteById();
 void deleteList();
 void insertStart();
 void insertTail();
-void display();
+void printList();
+void SortLinkedList();
 struct Employee createEmployee();
 
 struct Employee
 {
   int employeeId;
   char nama[30];
-  char ttl[30];
+  char tempatLahir[30];
+  char tanggalLahir[30];
   char jabatan[50];
 };
 
@@ -35,8 +34,6 @@ int main ()
 {
   struct Node *head = NULL;
   
-  int maxData = 2;
-
   bool quit = false;
   int menuNo;
 
@@ -47,10 +44,9 @@ int main ()
       printf("Pilihan Menu: \n");
       printf("1. Input data Karyawan\n");
       printf("2. Tampilkan seluruh data\n");
-      printf("3. Cari data berdasarkan ID\n");
-      printf("4. Hapus data berdasarkan ID\n");
-      printf("5. Hapus seluruh data\n");
-      printf("6. Exit\n");
+      printf("3. Hapus data berdasarkan ID\n");
+      printf("4. Hapus seluruh data\n");
+      printf("5. Exit\n");
       printf("Pilihan Anda: ");
       scanf("%d", &menuNo);
       while ((getchar()) != '\n');
@@ -61,47 +57,30 @@ int main ()
         insertTail (&head, emp);
       }
       else if (menuNo == 2) {
-          // printf("\n\n== View History==\n");
-          // printf("--------------------------------------------------------\n");
-          // printf("|%5s|%10s|%10s|%10s|%10s|\n", "No", "Minuman", "Size", "Penyajian", "Harga");
-          // printf("--------------------------------------------------------\n");
-          // for(int i = 1; i < 10; i++){
-          //     if(strlen(transaction[i].nama) > 0){
-          //         printf("|%5d|%10s|%10s|%10s|%10s|\n", i, transaction[i].nama, transaction[i].size, transaction[i].penyajian, transaction[i].harga);
-          //     }
-          // }
-          // printf("--------------------------------------------------------\n");
+        printf("\n-----------------------------------------");
+        printf("\n              DATA KARYAWAN              ");
+        printf("\n=========================================\n");
+        SortLinkedList(head);
+        printList(head);
       }
       else if(menuNo == 3){
-          
+        int id;
+        printf("Masukkan ID Karyawan : \n");
+        scanf("%d", &id);
+        while ((getchar()) != '\n');
+        deleteById(&head, id);
       }
       else if(menuNo == 4){
-        
+        deleteList(&head);
       }
       else if(menuNo == 5){
-        
-      }
-      else if(menuNo == 6){
         quit = true;
       }
   } while (quit != true);
-    
-  display(head);
-
-  searchById(head, 1);
-
-  deleteById(&head, 2);
-
-  display(head);
-
-  deleteList(&head);
-
-  display(head);
   return 0;
 }
 
-void insertStart (struct Node **head, struct Employee employeeData)
-{
+void insertStart (struct Node **head, struct Employee employeeData){
 
   // dynamically create memory for this newNode
   struct Node *newNode = (struct Node *) malloc (sizeof (struct Node));
@@ -146,22 +125,49 @@ void insertTail(struct Node** head, struct Employee employeeData)
     return;    
 }
 
-void display (struct Node *node)
-{
+void SortLinkedList(struct Node *head)
+    {
+    printf("\nWORKING\n");
+    struct Node *node=NULL, *temp = NULL;
+    struct Employee tempvar;//temp variable to store node data
+    node = head;
+    //temp = node;//temp node to hold node data and next link
+    while(node != NULL)
+    {
+        temp=node; 
+        while (temp->next !=NULL)//travel till the second last element 
+        {
+           if(temp->employee.employeeId > temp->employee.employeeId)// compare the data of the nodes 
+            {
+              tempvar = temp->employee;
+              temp->employee = temp->next->employee;// swap the data
+              temp->next->employee = tempvar;
+            }
+         temp = temp->next;    // move to the next element 
+        }
+        node = node->next;    // move to the next node
+    }
+}
+
+void printStruct(struct Node *node) {
+  printf("Employee ID : %d\n", node->employee.employeeId);
+  printf("Name : %s", node->employee.nama);
+  printf("Tempat Lahir : %s", node->employee.tempatLahir);
+  printf("Tanggal Lahir : %s", node->employee.tanggalLahir);
+  printf("Jabatan : %s", node->employee.jabatan);
+  printf("-----------------------------------------\n");
+}
+
+void printList (struct Node *node) {
   if(node == NULL) {
-    printf("LINKED LIST IS EMPTY!");
+    printf("Tidak ada data untuk ditampilkan\n");
     return;
   }
 
   // as linked list will end when Node is Null
   while (node != NULL)
     {
-      printf("----------------\n");
-      printf ("Employee ID:%d\n", node->employee.employeeId);
-      printf ("Name %s\n", node->employee.nama);
-      printf ("TTL %s\n", node->employee.ttl);
-      printf ("Jabatan %s\n", node->employee.jabatan);
-      printf("----------------\n");
+      printStruct(node);
       node = node->next;
     }
   printf ("\n");
@@ -173,8 +179,9 @@ void printErr (char errMsg[]) {
   printf("\033[0m");
 }
 
-bool validateEmployeeId(int id) {
-  if(id >= 1 && id <= 5){
+bool validateEmployeeId(char id[]) {
+  int length = strlen(id) - 1;
+  if(length > 0 && length <= 5){
     return true;
   } else {
     printErr("Input salah! tolong masukkan angka dari 1-5\n");
@@ -183,7 +190,7 @@ bool validateEmployeeId(int id) {
 }
 
 struct Employee createEmployee () {
-  char nama[30], ttl[30], jabatan[50], employeeId[5];
+  char nama[30], tempatLahir[30], tanggalLahir[30], jabatan[50], employeeId[10];
   
   bool isIdValid = false;
   
@@ -192,15 +199,18 @@ struct Employee createEmployee () {
   // input employee data
   do {
       printf("Input Employee Id : \n");
-      fgets(employeeId, 5, stdin);
-      isIdValid = validateEmployeeId(atoi(employeeId));
+      fgets(employeeId, 10, stdin);
+      isIdValid = validateEmployeeId(employeeId);
   } while (!isIdValid);
 
   printf("Input nama : \n");
   fgets(nama, 30, stdin);
   
-  printf("Input TTL : \n");
-  fgets(ttl, 30, stdin);
+  printf("Input Tempat Lahir : \n");
+  fgets(tempatLahir, 30, stdin);
+
+  printf("Input Tanggal Lahir : \n");
+  fgets(tanggalLahir, 30, stdin);
   
   printf("Input jabatan : \n");
   fgets(jabatan, 50, stdin);
@@ -208,7 +218,8 @@ struct Employee createEmployee () {
   /* Employee specification */
   employee.employeeId = atoi(employeeId);
   strcpy(employee.nama, nama);
-  strcpy(employee.ttl, ttl);
+  strcpy(employee.tempatLahir, tempatLahir);
+  strcpy(employee.tanggalLahir, tanggalLahir);
   strcpy(employee.jabatan, jabatan); 
 
   return employee;
@@ -265,8 +276,8 @@ void deleteList (struct Node **head) {
       // move head to next node
       *head = (*head)->next;
 
+      printf ("\nData dengan ID %d telah dihapus\n", temp->employee.employeeId);
       free (temp);
-      printf ("\n%d deleted\n", temp->employee.employeeId);
     }
   return;
 
