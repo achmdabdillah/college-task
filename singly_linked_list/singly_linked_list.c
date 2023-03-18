@@ -4,7 +4,6 @@
 #include <stdbool.h>
 
 // TODO validate length of Employee Data
-// check if id is already exist or not
 
 bool searchById();
 void deleteById();
@@ -53,6 +52,8 @@ int main ()
       while ((getchar()) != '\n');
       
       if(menuNo == 1) {
+        // TODO count linked list, return if >= 5
+
         struct Employee emp = createEmployee(head);
         insertTail (&head, emp);
       }
@@ -113,6 +114,36 @@ void insertTail(struct Node** head, struct Employee employeeData)
     return;    
 }
 
+bool validateLength (char type[], char data[]) {
+  int maxLen = 0;
+  int dataLen = strlen(data) - 1;
+
+  if(strcmp(type, "id") == 0){
+    maxLen = 5;
+  }
+
+  if(strcmp(type, "nama") == 0){
+    maxLen = 30;
+  }
+
+  if(strcmp(type, "tempat lahir") == 0){
+    maxLen = 30;
+  }
+
+  if(strcmp(type, "jabatan") == 0){
+    maxLen = 50;
+  }
+
+  if(dataLen > maxLen){
+    printf("\033[1;31m");
+    printf("Input %s maksimal %d karakter!\n", type, maxLen);
+    printf("\033[0m");
+    return false;
+  } 
+  return true;
+
+}
+
 void SortLinkedList(struct Node *head)
     {
     struct Node *node=NULL, *temp = NULL;
@@ -136,7 +167,7 @@ void SortLinkedList(struct Node *head)
 }
 
 void printStruct(struct Node *node) {
-  printf("Employee ID : %s\n", node->employee.employeeId);
+  printf("Employee ID : %s", node->employee.employeeId);
   printf("Name : %s", node->employee.nama);
   printf("Tempat Lahir : %s", node->employee.tempatLahir);
   printf("Tanggal Lahir : %s", node->employee.tanggalLahir);
@@ -158,27 +189,18 @@ void printList (struct Node *node) {
   printf ("\n");
 }
 
-bool validateEmployeeId(char id[]) {
-  int length = strlen(id) - 1;
-  if(length > 0 && length <= 5){
-    return true;
-  } else {
-    printErr("Input salah! tolong masukkan angka dari 1-5\n");
-    return false;
-  }
-}
 
 struct Employee createEmployee (struct Node * head) {
-  char nama[30], tempatLahir[30], tanggalLahir[30], jabatan[50], employeeId[10];
+  char nama[80], tempatLahir[80], tanggalLahir[80], jabatan[100], employeeId[10];
   
-  bool isIdValid = false;
+  bool isIdValid, isNamaValid, isTempatLahirValid, isJabatanValid = false;
   
   struct Employee employee;
   
   do {
       printf("Input Employee Id : \n");
       fgets(employeeId, 10, stdin);
-      isIdValid = validateEmployeeId(employeeId);
+      isIdValid = validateLength("id", employeeId);
 
       if(searchById(head, employeeId)){
         printErr("ID Sudah digunakan, Silakan gunakan ID lain");
@@ -186,17 +208,26 @@ struct Employee createEmployee (struct Node * head) {
       };
   } while (!isIdValid);
 
-  printf("Input nama : \n");
-  fgets(nama, 30, stdin);
-  
-  printf("Input Tempat Lahir : \n");
-  fgets(tempatLahir, 30, stdin);
+  do {
+      printf("Input nama : \n");
+      fgets(nama, 80, stdin);
+      isNamaValid = validateLength("nama", nama);
+  } while (!isNamaValid);
+
+  do {
+      printf("Input Tempat Lahir : \n");
+      fgets(tempatLahir, 80, stdin);
+      isTempatLahirValid = validateLength("tempat lahir", tempatLahir);
+  } while (!isTempatLahirValid);
 
   printf("Input Tanggal Lahir : \n");
-  fgets(tanggalLahir, 30, stdin);
+  fgets(tanggalLahir, 80, stdin);
   
-  printf("Input jabatan : \n");
-  fgets(jabatan, 50, stdin);
+  do {
+      printf("Input jabatan : \n");
+      fgets(jabatan, 100, stdin);
+      isJabatanValid = validateLength("jabatan", jabatan);
+  } while (!isJabatanValid);
 
   strcpy(employee.employeeId, employeeId);
   strcpy(employee.nama, nama);
