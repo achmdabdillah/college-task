@@ -18,7 +18,7 @@ struct Employee createEmployee();
 
 struct Employee
 {
-  int employeeId;
+  char employeeId[10];
   char nama[30];
   char tempatLahir[30];
   char tanggalLahir[30];
@@ -53,7 +53,7 @@ int main ()
       while ((getchar()) != '\n');
       
       if(menuNo == 1) {
-        struct Employee emp = createEmployee();
+        struct Employee emp = createEmployee(head);
         insertTail (&head, emp);
       }
       else if (menuNo == 2) {
@@ -123,7 +123,7 @@ void SortLinkedList(struct Node *head)
         temp=node; 
         while (temp->next !=NULL)
         {
-           if(temp->employee.employeeId > temp->employee.employeeId)
+           if(atoi(temp->employee.employeeId) > atoi(temp->next->employee.employeeId))
             {
               tempvar = temp->employee;
               temp->employee = temp->next->employee;
@@ -136,7 +136,7 @@ void SortLinkedList(struct Node *head)
 }
 
 void printStruct(struct Node *node) {
-  printf("Employee ID : %d\n", node->employee.employeeId);
+  printf("Employee ID : %s\n", node->employee.employeeId);
   printf("Name : %s", node->employee.nama);
   printf("Tempat Lahir : %s", node->employee.tempatLahir);
   printf("Tanggal Lahir : %s", node->employee.tanggalLahir);
@@ -168,7 +168,7 @@ bool validateEmployeeId(char id[]) {
   }
 }
 
-struct Employee createEmployee () {
+struct Employee createEmployee (struct Node * head) {
   char nama[30], tempatLahir[30], tanggalLahir[30], jabatan[50], employeeId[10];
   
   bool isIdValid = false;
@@ -179,6 +179,11 @@ struct Employee createEmployee () {
       printf("Input Employee Id : \n");
       fgets(employeeId, 10, stdin);
       isIdValid = validateEmployeeId(employeeId);
+
+      if(searchById(head, employeeId)){
+        printErr("ID Sudah digunakan, Silakan gunakan ID lain");
+        isIdValid = false;
+      };
   } while (!isIdValid);
 
   printf("Input nama : \n");
@@ -193,7 +198,7 @@ struct Employee createEmployee () {
   printf("Input jabatan : \n");
   fgets(jabatan, 50, stdin);
 
-  employee.employeeId = atoi(employeeId);
+  strcpy(employee.employeeId, employeeId);
   strcpy(employee.nama, nama);
   strcpy(employee.tempatLahir, tempatLahir);
   strcpy(employee.tanggalLahir, tanggalLahir);
@@ -202,10 +207,10 @@ struct Employee createEmployee () {
   return employee;
 } 
 
-bool searchById(struct Node* head, int x) {
+bool searchById(struct Node* head, char id[]) {
   struct Node* current = head;
   while (current != NULL) {
-    if (current->employee.employeeId == x){
+    if (strcmp(current->employee.employeeId, id) == 0){
       return true;
     }
     current = current->next;
@@ -213,16 +218,16 @@ bool searchById(struct Node* head, int x) {
   return false;
 }
 
-void deleteById(struct Node** head, int employeeId) {
+void deleteById(struct Node** head, char employeeId[]) {
   struct Node *temp = *head, *prev;
 
-  if (temp != NULL && temp->employee.employeeId == employeeId) {
+  if (temp != NULL && strcmp(temp->employee.employeeId, employeeId) == 0) {
       *head = temp->next;
       free(temp);
       return;
   }
 
-  while (temp != NULL && temp->employee.employeeId != employeeId) {
+  while (temp != NULL && strcmp(temp->employee.employeeId, employeeId) != 0) {
       prev = temp;
       temp = temp->next;
   }
@@ -243,7 +248,7 @@ void deleteList (struct Node **head) {
       temp = *head;
       *head = (*head)->next;
 
-      printf ("\nData dengan ID %d telah dihapus\n", temp->employee.employeeId);
+      printf ("\nData dengan ID %s telah dihapus\n", temp->employee.employeeId);
       free (temp);
     }
   return;
