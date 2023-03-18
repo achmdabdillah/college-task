@@ -10,6 +10,7 @@ void insertStart();
 void insertTail();
 void printList();
 void SortLinkedList();
+void printSuccess();
 void printErr();
 int getCount();
 struct Employee createEmployee();
@@ -57,6 +58,7 @@ int main ()
         } else {
           struct Employee emp = createEmployee(head);
           insertTail (&head, emp);
+          printSuccess("\nData berhasil ditambahkan\n");
         }
       }
       else if (menuNo == 2) {
@@ -67,10 +69,12 @@ int main ()
         printList(head);
       }
       else if(menuNo == 3){
-        int id;
+        char id[10];
         printf("Masukkan ID Karyawan : \n");
-        scanf("%d", &id);
-        while ((getchar()) != '\n');
+        fgets(id, 10, stdin);
+        if(!searchById(head, id)){
+          printErr("Data tidak ditemukan, tidak dapat menghapus data!");
+        }
         deleteById(&head, id);
       }
       else if(menuNo == 4){
@@ -255,7 +259,7 @@ void deleteById(struct Node** head, char employeeId[]) {
   struct Node *temp = *head, *prev;
 
   if (temp != NULL && strcmp(temp->employee.employeeId, employeeId) == 0) {
-      *head = temp->next;
+      *head = temp->next; 
       free(temp);
       return;
   }
@@ -271,6 +275,8 @@ void deleteById(struct Node** head, char employeeId[]) {
   prev->next = temp->next;
 
   free(temp);
+
+  printSuccess("data telah dihapus\n");
 }
 
 void deleteList (struct Node **head) {
@@ -297,8 +303,14 @@ int getCount(struct Node* head) {
     return count;
 }
 
-void printErr (char errMsg[]) {
+void printSuccess (char msg[]) {
+  printf("\033[0;32m");
+  printf("%s\n", msg);
+  printf("\033[0m");
+}
+
+void printErr (char msg[]) {
   printf("\033[1;31m");
-  printf("%s\n", errMsg);
+  printf("%s\n", msg);
   printf("\033[0m");
 }
