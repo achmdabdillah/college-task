@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-// TODO validate length of Employee Data
-
 bool searchById();
 void deleteById();
 void deleteList();
@@ -13,6 +11,7 @@ void insertTail();
 void printList();
 void SortLinkedList();
 void printErr();
+int getCount();
 struct Employee createEmployee();
 
 struct Employee
@@ -52,10 +51,13 @@ int main ()
       while ((getchar()) != '\n');
       
       if(menuNo == 1) {
-        // TODO count linked list, return if >= 5
-
-        struct Employee emp = createEmployee(head);
-        insertTail (&head, emp);
+        int count = getCount(head);
+        if(count >= 5){
+          printErr("Maksimal data yang dapat dinput adalah 5, Silakan Hapus data terlebih dahulu");
+        } else {
+          struct Employee emp = createEmployee(head);
+          insertTail (&head, emp);
+        }
       }
       else if (menuNo == 2) {
         printf("\n-----------------------------------------");
@@ -284,6 +286,15 @@ void deleteList (struct Node **head) {
     }
   return;
 
+}
+int getCount(struct Node* head) {
+    int count = 0; // Initialize count
+    struct Node* current = head; // Initialize current
+    while (current != NULL) {
+        count++;
+        current = current->next;
+    }
+    return count;
 }
 
 void printErr (char errMsg[]) {
