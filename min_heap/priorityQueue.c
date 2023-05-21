@@ -3,10 +3,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 int size = 0;
-// todo create menu option for: 
-// 1. insert data
-// 2. delete priority
-// 3. sort by
 
 struct Data
 {
@@ -16,21 +12,19 @@ struct Data
 };
 
 
-// todo get input for object data
-struct Data getData () {
-  int skalaPerbaikan;
-  char nama[50], merk[50];
-  
+struct Data createData () {
   struct Data data;
+  int skalaPerbaikan;
+  char nama[100], merk[100];
   
   printf("Input Skala Perbaikan : \n");
   scanf("%d",  &skalaPerbaikan);
 
   printf("Input Nama Pemilik : \n");
-  fgets(nama, 20, stdin);
+  scanf("%s",  nama);
 
   printf("Input Merk Motor : \n");
-  fgets(merk, 20, stdin);
+  scanf("%s",  merk);
 
   data.skalaPerbaikan = skalaPerbaikan;
   strcpy(data.nama, nama);
@@ -95,7 +89,6 @@ void deleteRoot(struct Data *array[], int num) {
   }
 }
 
-
 void printArray(struct Data *array[], int size) {
   for (int i = 0; i < size; ++i){
     printf("%10d | ", array[i]->skalaPerbaikan);
@@ -128,47 +121,67 @@ void buildHeap(struct Data *arr[], int N)
         heapify(arr, N, i);
     }
 }
- 
 
 int main() {
   struct Data *array[10];
+  bool quit = false;
+  int menuNo;
 
-  struct Data a1 = { skalaPerbaikan: 2, nama: "adi", merk: "ADV" };
-  struct Data a2 = { skalaPerbaikan: 1, nama: "achmad", merk: "ADV" };
-  struct Data a3 = { skalaPerbaikan: 4, nama: "abdil", merk: "ADV" };
-  struct Data a4 = { skalaPerbaikan: 5, nama: "yuhu", merk: "ADV" };
-  struct Data a5 = { skalaPerbaikan: 3, nama: "testing", merk: "ADV" };
-//   struct Data a6 = { skalaPerbaikan: 23, nama: "testing", merk: "ADV" };
-//   struct Data a7 = { skalaPerbaikan: 13, nama: "testing", merk: "ADV" };
-//   struct Data a8 = { skalaPerbaikan: 53, nama: "testing", merk: "ADV" };
+  // Undisable code dibawah Untuk testing
+  struct Data data1 = { skalaPerbaikan: 2, nama: "adi", merk: "ADV" };
+  struct Data data2 = { skalaPerbaikan: 1, nama: "achmad", merk: "ADV" };
+  struct Data data3 = { skalaPerbaikan: 4, nama: "abdil", merk: "ADV" };
+  struct Data data4 = { skalaPerbaikan: 5, nama: "yuhu", merk: "ADV" };
+  struct Data data5 = { skalaPerbaikan: 3, nama: "testing", merk: "ADV" };
+  insert(array, &data1);
+  insert(array, &data2);
+  insert(array, &data3);
+  insert(array, &data4);
+  insert(array, &data5);
 
-  insert(array, &a1);
-  insert(array, &a2);
-  insert(array, &a3);
-  insert(array, &a4);
-  insert(array, &a5);
-//   insert(array, &a6);
-//   insert(array, &a7);
-//   insert(array, &a8);
+  do {
+      printf("==============================\n");
+      printf("PROGRAM ANTRIAN PRIORITAS\n\n"); 
+      printf("Pilihan Menu: \n");
+      printf("1. Insert kedalam antrian\n");
+      printf("2. Keluar dari antrian\n");
+      printf("3. Lihat antrian berdasarkan skala prioritas\n");
+      printf("4. Exit\n");
+      printf("Pilihan Anda: ");
+      scanf("%d", &menuNo);
+      while ((getchar()) != '\n');
 
-  printf("Min-Heap array: \n");
-  printArray(array, size);
+      if (menuNo == 1) {
+        printf("Insert data: \n");
+        struct Data newData = createData();
+        insert(array, &newData);
+        printArray(array, size);
+      } else if (menuNo == 2){
+        printf("Motor dengan merk %s milik Bapak/Ibu %s telah selesai diperbaiki: \n",array[0]->merk, array[0]->nama);
+        deleteRoot(array, array[0]->skalaPerbaikan);
+        printArray(array, size);
+      } else if (menuNo == 3){
+        printf("Daftar prioritas pengerjaan :\n");
+        heapSort(array, size);
+        printArray(array, size);
+        buildHeap(array, size);
+      } else if (menuNo == 4){
+        quit = true;
+      }
+  } while (!quit);
+
+  // printf("Min-Heap array: \n");
+  // printArray(array, size);
   
-  deleteRoot(array, array[0]->skalaPerbaikan);
-  deleteRoot(array, array[0]->skalaPerbaikan);
-  printf("After delete priority: \n");
-  printArray(array, size);
+  // deleteRoot(array, array[0]->skalaPerbaikan);
+  // printf("After delete priority: \n");
+  // printArray(array, size);
 
+  // heapSort(array, size);
+  // printf("After heap sort: \n");
+  // printArray(array, size);
 
-  heapSort(array, size);
-  printf("After heap sort: \n");
-  printArray(array, size);
-
-//   deleteRoot(array, array[0]->skalaPerbaikan);
-//   deleteRoot(array, array[0]->skalaPerbaikan);
-
-  buildHeap(array, size);
-  printf("After heapify: \n");
-  printArray(array, size);
+  // printf("After heapify: \n");
+  // printArray(array, size);
 
 }
