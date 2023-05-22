@@ -127,7 +127,6 @@ int main() {
   bool quit = false;
   int menuNo;
 
-  // Undisable code dibawah Untuk testing
   struct Data data1 = { skalaPerbaikan: 2, nama: "adi", merk: "ADV" };
   struct Data data2 = { skalaPerbaikan: 1, nama: "achmad", merk: "ADV" };
   struct Data data3 = { skalaPerbaikan: 4, nama: "abdil", merk: "ADV" };
@@ -169,19 +168,4 @@ int main() {
         quit = true;
       }
   } while (!quit);
-
-  // printf("Min-Heap array: \n");
-  // printArray(array, size);
-  
-  // deleteRoot(array, array[0]->skalaPerbaikan);
-  // printf("After delete priority: \n");
-  // printArray(array, size);
-
-  // heapSort(array, size);
-  // printf("After heap sort: \n");
-  // printArray(array, size);
-
-  // printf("After heapify: \n");
-  // printArray(array, size);
-
 }
